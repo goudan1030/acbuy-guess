@@ -14,21 +14,16 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ isDownloadVisible }) => {
       }}
     >
       <div
-        className="flex justify-between items-center mx-auto" // 内容区域居中
+        className="flex justify-center items-center mx-auto" // 修改为justify-center使内容居中
         style={{
           height: '50px',
           maxWidth: '1200px', // 内容区域宽度限制为1200px
           padding: '0 16px', // 添加左右内边距
         }}
       >
-        {/* Logo */}
+        {/* Logo居中展示 */}
         <a href="/" className="text-white">
           <img src="/svg-menu.svg" alt="Logo" className="h-10" />
-        </a>
-
-        {/* Join Button */}
-        <a href="/join" className="bg-black text-white px-4 py-2 rounded hover:bg-gray-700">
-          Join
         </a>
       </div>
     </div>

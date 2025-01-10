@@ -1,11 +1,29 @@
 import React from 'react';
 import { Product } from './types';
+import { useNavigate } from 'react-router-dom'; // 新增导入
 
 interface ProductCardProps {
   product: Product;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const navigate = useNavigate(); // 新增导航hook
+  
+  // 处理购买按钮点击
+  const handleBuyNow = () => {
+    console.log('Buy now clicked for product:', product.id);
+    navigate('/'); // 跳转到首页
+    // 这里可以添加购买逻辑
+  };
+
+  // 处理咨询按钮点击
+  const handleInquiry = () => {
+    console.log('Inquiry clicked for product:', product.id);
+    navigate('/'); // 跳转到首页
+    // 这里可以添加咨询逻辑
+  };
+
+  
   // 确保image_url存在且为有效URL
   const imageUrl = product.image_url || 'https://via.placeholder.com/150'; // 默认图片
   // 确保current_price存在且为有效数值
@@ -19,9 +37,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     : 0;
 
   return (
-    <div className="rounded-lg overflow-hidden flex flex-col h-full">
+    <div className="relative w-full aspect-square"> {/* 使用aspect-square保持正方形 */}
       {/* 使用默认图片如果image_url无效 */}
-      <img src={imageUrl} alt={product.name} className="w-full h-48 object-cover" />
+      <img src={imageUrl} alt={product.name} className="w-full object-cover" />
       <h3 className="font-semibold text-gray-800"
        style={{
         display: '-webkit-box',
@@ -57,10 +75,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-2">
-        <button className="bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition">
+        <button onClick={handleBuyNow} className="bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition">
           BUY NOW
         </button>
-        <button className="bg-gray-100 text-gray-800 py-2 rounded-md hover:bg-gray-200 transition">
+        <button onClick={handleInquiry} className="bg-gray-100 text-gray-800 py-2 rounded-md hover:bg-gray-200 transition">
           INQUIRY
         </button>
       </div>
