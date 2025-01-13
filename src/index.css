@@ -2,11 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 添加全局背景样式 */
+/* 重置基础样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 设置根元素样式 */
+:root {
+  height: 100%;
+}
+
+/* 移动端背景样式 */
+html {
+  height: 100%;
+}
+
 body {
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
   background: linear-gradient(180deg, #FA0202 0%, #FF345D 64%, #FF1C37 100%);
-  min-height: 100vh;
-  background-attachment: fixed;
+}
+
+/* 内容容器样式 */
+.container-gradient {
+  position: relative;
+  z-index: 1;
+}
+
+/* 桌面端背景样式 */
+@media (min-width: 768px) {
+  body {
+    background: #ffe5c5;
+  }
 }
 
 /* 确保内容区域有适当的背景 */

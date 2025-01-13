@@ -24,7 +24,18 @@ export const apiService = {
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      console.error('获取推荐商品失败:', error);
+      throw error;
+    }
+
+    if (!data) {
+      return [];
+    }
+
+    // 打印获取到的数据，用于调试
+    console.log('获取到的推荐商品数据:', data);
+
     return data;
   }
 };

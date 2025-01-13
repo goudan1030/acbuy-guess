@@ -1,86 +1,79 @@
 import React from 'react';
-import { Product } from './types';
-import { useNavigate } from 'react-router-dom'; // 新增导入
+import { Product } from '../types/Product';
 
 interface ProductCardProps {
   product: Product;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const navigate = useNavigate(); // 新增导航hook
-  
-  // 处理购买按钮点击
-  const handleBuyNow = () => {
-    console.log('Buy now clicked for product:', product.id);
-    navigate('/'); // 跳转到首页
-    // 这里可以添加购买逻辑
+  // 格式化价格函数
+  const formatPrice = (price: number | null | undefined) => {
+    if (!price || typeof price !== 'number') {
+      return "0.00";
+    }
+    return price.toFixed(2);
   };
 
-  // 处理咨询按钮点击
-  const handleInquiry = () => {
-    console.log('Inquiry clicked for product:', product.id);
-    navigate('/'); // 跳转到首页
-    // 这里可以添加咨询逻辑
+  // 确保价格是数字类型
+  const price = typeof product.price === 'number' ? product.price : 0;
+  const originalPrice = typeof product.original_price === 'number' ? product.original_price : 0;
+
+  // 计算折扣的函数
+  const calculateDiscount = (originalPrice: number, price: number) => {
+    if (!originalPrice || originalPrice <= price) return null;
+    const discount = ((originalPrice - price) / originalPrice) * 100;
+    return Math.round(discount);
   };
-
-  
-  // 确保image_url存在且为有效URL
-  const imageUrl = product.image_url || 'https://via.placeholder.com/150'; // 默认图片
-  // 确保current_price存在且为有效数值
-  const currentPrice = product.current_price ? parseFloat(product.current_price) : 0;
-  // 确保original_price存在且为有效数值
-  const originalPrice = product.original_price ? parseFloat(product.original_price) : 0;
-
-  const hasDiscount = originalPrice > currentPrice;
-  const discountPercentage = hasDiscount
-    ? ((originalPrice - currentPrice) / originalPrice) * 100
-    : 0;
 
   return (
-    <div className="relative w-full aspect-square"> {/* 使用aspect-square保持正方形 */}
-      {/* 使用默认图片如果image_url无效 */}
-      <img src={imageUrl} alt={product.name} className="w-full object-cover" />
-      <h3 className="font-semibold text-gray-800"
-       style={{
-        display: '-webkit-box',
-        WebkitLineClamp: 2,
-        WebkitBoxOrient: 'vertical',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        lineHeight: '1.5',
-        maxHeight: '3em',
-      }}
-      >
-      {product.name}</h3>
-
-      <div className="mt-2 flex items-center justify-between">
-        <div>
-          <span className="font-bold text-red-600" style={{ fontSize: '18px' }}>
-            ${currentPrice.toFixed(2)}
-          </span>
-          {hasDiscount && (
-            <span className="ml-2 text-gray-500 line-through" style={{ fontSize: '12px' }}>
-              ${originalPrice.toFixed(2)}
-            </span>
-          )}
-        </div>
-        {hasDiscount && (
-          <span
-            className="bg-red-100 text-red-800 text-xs font-semibold rounded"
-            style={{ padding: '2px 5px', fontSize: '10px' }} // 缩小标签大小及边距
-          >
-            {discountPercentage.toFixed(0)}% OFF
-          </span>
-        )}
+    <div className="bg-white rounded-lg overflow-hidden">
+      {/* 图片部分 */}
+      <div className="aspect-square relative">
+        <img
+          src={product.image_url}
+          alt={product.name}
+          className="w-full h-full object-cover"
+        />
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-2">
-        <button onClick={handleBuyNow} className="bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition">
-          BUY NOW
-        </button>
-        <button onClick={handleInquiry} className="bg-gray-100 text-gray-800 py-2 rounded-md hover:bg-gray-200 transition">
-          INQUIRY
-        </button>
+      {/* 内容部分 */}
+      <div className="p-2">
+        <h3 className="text-sm font-medium line-clamp-2 mb-2">{product.name}</h3>
+        <div className="flex items-center gap-2">
+          <span className="text-red-500 font-bold">
+            ${formatPrice(price)}
+          </span>
+          {originalPrice > price && (
+            <>
+              <span className="text-gray-400 text-sm line-through">
+                ${formatPrice(originalPrice)}
+              </span>
+              <span className="bg-red-100 text-red-800 text-xs font-semibold px-2 py-1 rounded">
+                {calculateDiscount(originalPrice, price)}% OFF
+              </span>
+            </>
+          )}
+        </div>
+
+        {/* 按钮部分 - 修改为水平布局 */}
+        <div className="mt-2 grid grid-cols-2 gap-2">
+          <a
+            href={product.purchase_link || '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-red-600 text-white py-2 px-4 rounded-md text-center text-sm font-bold hover:bg-red-700 transition-colors"
+          >
+            BUY NOW
+          </a>
+          <a
+            href={product.inquiry_link || '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-gray-100 text-gray-800 py-2 px-4 rounded-md text-center text-sm font-bold hover:bg-gray-200 transition-colors"
+          >
+            INQUIRY
+          </a>
+        </div>
       </div>
     </div>
   );

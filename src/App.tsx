@@ -23,22 +23,31 @@ function App() {
   }, []);
 
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              <Header />
-              <div className="mx-auto" style={{ maxWidth: '1200px', padding: '0 0px' }}>
-                <FeatureProductSection />
-              </div>
-              <div className="py-8"></div>
-            </>
-          }
-        />
-      </Routes>
-    </Router>
+    <div className="min-h-screen bg-transparent">
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <Header />
+                <div 
+                  className="mx-auto container-gradient mt-4" 
+                  style={{ 
+                    maxWidth: '1200px', 
+                    padding: '0 0px',
+                    marginTop: '20px'
+                  }}
+                >
+                  <FeatureProductSection />
+                </div>
+                <div className="py-8"></div>
+              </>
+            }
+          />
+        </Routes>
+      </Router>
+    </div>
   );
 }
 

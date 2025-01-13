@@ -58,18 +58,14 @@ const FeatureProductSection: React.FC<FeatureProductSectionProps> = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const allProducts = await apiService.getProducts();
         const recommendedProducts = await apiService.getRecommendProducts();
+        console.log('获取到的推荐商品:', recommendedProducts);
         
-        const otherProducts = allProducts.filter(
-          product => !recommendedProducts.some(rp => rp.id === product.id)
-        );
-
         setCampaignProducts(recommendedProducts);
-        setOtherProducts(otherProducts);
+        setOtherProducts(recommendedProducts);
         setIsLoading(false);
       } catch (error) {
-        console.error('Failed to fetch products:', error);
+        console.error('获取商品失败:', error);
         setIsLoading(false);
       }
     };
@@ -85,8 +81,23 @@ const FeatureProductSection: React.FC<FeatureProductSectionProps> = () => {
   };
 
   const currentProduct = campaignProducts[currentIndex];
-  const discountedPrice = currentProduct?.current_price || 0;
-  const originalPrice = currentProduct?.original_price || discountedPrice;
+  const price = typeof currentProduct?.price === 'number' ? currentProduct.price : 0;
+  const originalPrice = typeof currentProduct?.original_price === 'number' ? currentProduct.original_price : 0;
+
+  // 格式化价格函数
+  const formatPrice = (price: number | null | undefined) => {
+    if (!price || typeof price !== 'number') {
+      return "0.00";
+    }
+    return price.toFixed(2);
+  };
+
+  // 计算折扣的函数
+  const calculateDiscount = (originalPrice: number, price: number) => {
+    if (!originalPrice || originalPrice <= price) return null;
+    const discount = ((originalPrice - price) / originalPrice) * 100;
+    return Math.round(discount);
+  };
 
   if (isLoading) {
     return (
@@ -152,7 +163,7 @@ const FeatureProductSection: React.FC<FeatureProductSectionProps> = () => {
         <div className="pt-8 flex flex-col">
           <div className="flex flex-row items-start gap-4 w-full">
             {/* 左侧图片 */}
-            <div className="w-1/2">
+            <div className="w-2/5">
               <img
                 src={currentProduct?.image_url || '/placeholder-product.png'}
                 alt={currentProduct?.name}
@@ -161,16 +172,25 @@ const FeatureProductSection: React.FC<FeatureProductSectionProps> = () => {
             </div>
 
             {/* 右侧内容 */}
-            <div className="w-1/2 flex flex-col justify-between">
+            <div className="w-3/5 flex flex-col justify-between">
               <div>
                 <h3 className="text-lg font-semibold mb-2">
-                  Here's a pair of shoes that acbuy got for me for 10% off
+                  {currentProduct?.name || "Here's a pair of shoes that acbuy got for me for 10% off"}
                 </h3>
 
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-red-500 font-bold text-xl">¥{discountedPrice}</span>
-                  {originalPrice > discountedPrice && (
-                    <span className="text-gray-500 line-through text-sm">¥{originalPrice}</span>
+                  <span className="text-red-500 font-bold text-xl">
+                    ${formatPrice(price)}
+                  </span>
+                  {originalPrice > price && (
+                    <>
+                      <span className="text-gray-500 line-through text-sm">
+                        ${formatPrice(originalPrice)}
+                      </span>
+                      <span className="bg-red-100 text-red-800 text-xs font-semibold px-2 py-1 rounded">
+                        {calculateDiscount(originalPrice, price)}% OFF
+                      </span>
+                    </>
                   )}
                 </div>
 
@@ -181,28 +201,34 @@ const FeatureProductSection: React.FC<FeatureProductSectionProps> = () => {
             </div>
           </div>
 
-          {/* 底部按钮 */}
-          <button
-            className="mt-4 mb-4 w-full text-white font-bold uppercase transition-colors"
-            style={{
-              height: '63px',
-              borderRadius: '227px',
-              background: '#FF0000',
-              boxShadow: `
-                0px 5px 15px 0px rgba(255, 0, 0, 0.35),
-                inset 0px -4px 10px 0px rgba(255, 255, 255, 0.6),
-                inset 0px 4px 10px 0px rgba(255, 255, 255, 0.6)
-              `,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              fontSize: '20px',
-              fontWeight: '900',
-              letterSpacing: '1px'
-            }}
-          >
-            GET IT IN THE APP
-          </button>
+          {/* 底部按钮区域 */}
+          <div className="mt-4 mb-4">
+            {/* 购买按钮 */}
+            <a
+              href={currentProduct?.purchase_link || '#'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full text-white font-bold uppercase transition-colors"
+              style={{
+                height: '63px',
+                borderRadius: '227px',
+                background: '#FF0000',
+                boxShadow: `
+                  0px 5px 15px 0px rgba(255, 0, 0, 0.35),
+                  inset 0px -4px 10px 0px rgba(255, 255, 255, 0.6),
+                  inset 0px 4px 10px 0px rgba(255, 255, 255, 0.6)
+                `,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                fontSize: '20px',
+                fontWeight: '900',
+                letterSpacing: '1px'
+              }}
+            >
+              GET IT IN THE APP
+            </a>
+          </div>
         </div>
       </section>
 
@@ -236,14 +262,13 @@ const FeatureProductSection: React.FC<FeatureProductSectionProps> = () => {
           </div>
 
           <div className="p-4">
-            {/* 移动端：2列，PC端：4列 */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {otherProducts.slice(0, visibleProducts).map((product) => (
+              {campaignProducts.slice(0, visibleProducts).map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
 
-            {visibleProducts < otherProducts.length && (
+            {visibleProducts < campaignProducts.length && (
               <div className="mt-6 text-center">
                 <button
                   onClick={loadMoreProducts}
@@ -257,6 +282,9 @@ const FeatureProductSection: React.FC<FeatureProductSectionProps> = () => {
           </div>
         </div>
       </section>
+
+      {/* 添加底部间距 */}
+      <div className="pb-20"></div>
     </>
   );
 };
