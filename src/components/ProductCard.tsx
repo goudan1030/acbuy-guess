@@ -36,8 +36,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         />
       </div>
 
-      {/* 内容部分 */}
-      <div className="p-2">
+      {/* 内容部分 - 移除内边距 */}
+      <div>
         <h3 className="text-sm font-medium line-clamp-2 mb-2">{product.name}</h3>
         <div className="flex items-center gap-2">
           <span className="text-red-500 font-bold">
@@ -55,8 +55,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           )}
         </div>
 
-        {/* 按钮部分 - 修改为水平布局 */}
-        <div className="mt-2 grid grid-cols-2 gap-2">
+        {/* 按钮部分 */}
+        <div className="grid grid-cols-2 gap-2">
           <a
             href={product.purchase_link || '#'}
             target="_blank"

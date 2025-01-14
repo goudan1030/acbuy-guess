@@ -283,8 +283,62 @@ const FeatureProductSection: React.FC<FeatureProductSectionProps> = () => {
         </div>
       </section>
 
-      {/* 添加底部间距 */}
-      <div className="pb-20"></div>
+      {/* Discord 区域 */}
+      <section className="mt-8 mx-2 mb-24">
+        <div 
+          className="p-6 flex flex-col items-center"
+          style={{
+            borderRadius: '20px',
+            background: '#FF352C',
+            boxShadow: '0px 4px 10px 0px #FF2626',
+            opacity: 1
+          }}
+        >
+          {/* 标题 - 更新样式 */}
+          <h2 
+            className="mb-6 text-center uppercase"
+            style={{
+              fontFamily: 'Montserrat',
+              fontSize: '24px',
+              fontWeight: 900,
+              lineHeight: 'normal',
+              letterSpacing: '0em',
+              fontVariationSettings: '"opsz" auto',
+              fontFeatureSettings: '"kern" on',
+              color: '#FFFFFF'
+            }}
+          >
+            Join to discord
+          </h2>
+
+          {/* 二维码 */}
+          <div className="bg-white p-4 rounded-lg mb-6">
+            <img 
+              src="/discord-qr.png" 
+              alt="Discord QR Code" 
+              className="w-48 h-48 object-contain"
+            />
+          </div>
+
+          {/* 内容说明 */}
+          <div className="text-white text-center">
+            <p 
+              style={{
+                fontFamily: 'Montserrat',
+                fontSize: '16px',
+                fontWeight: 600,
+                lineHeight: 'normal',
+                letterSpacing: '0em',
+                fontVariationSettings: '"opsz" auto',
+                fontFeatureSettings: '"kern" on',
+                color: '#FFFFFF'
+              }}
+            >
+              Get more great recommendations from bloggers
+            </p>
+          </div>
+        </div>
+      </section>
     </>
   );
 };
