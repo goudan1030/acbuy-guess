@@ -48,7 +48,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               <span className="text-gray-400 text-sm line-through">
                 ${formatPrice(originalPrice)}
               </span>
-              <span className="bg-red-100 text-red-800 text-xs font-semibold px-2 py-1 rounded">
+              <span className="bg-red-100 text-red-800 text-[10px] font-semibold px-1.5 py-0.5 rounded">
                 {calculateDiscount(originalPrice, price)}% OFF
               </span>
             </>
@@ -61,7 +61,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             href={product.purchase_link || '#'}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-red-600 text-white py-2 px-4 rounded-md text-center text-sm font-bold hover:bg-red-700 transition-colors"
+            className="bg-red-600 text-white py-2 px-2 rounded-md text-center text-xs font-bold hover:bg-red-700 transition-colors"
           >
             BUY NOW
           </a>
@@ -69,7 +69,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             href={product.inquiry_link || '#'}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-gray-100 text-gray-800 py-2 px-4 rounded-md text-center text-sm font-bold hover:bg-gray-200 transition-colors"
+            className="bg-gray-100 text-gray-800 py-2 px-2 rounded-md text-center text-xs font-bold hover:bg-gray-200 transition-colors"
           >
             INQUIRY
           </a>

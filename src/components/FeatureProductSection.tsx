@@ -14,6 +14,7 @@ const FeatureProductSection: React.FC<FeatureProductSectionProps> = () => {
   const [visibleProducts, setVisibleProducts] = useState(12);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [appDownloadLink, setAppDownloadLink] = useState<string | null>(null);
 
   // 骨架屏组件
   const SkeletonLoader = () => (
@@ -71,6 +72,40 @@ const FeatureProductSection: React.FC<FeatureProductSectionProps> = () => {
     };
 
     fetchProducts();
+  }, []);
+
+  // 获取应用下载链接
+  useEffect(() => {
+    const fetchAppDownloadLink = async () => {
+      const links = await apiService.getAppDownloadLinks();
+      if (links) {
+        // 根据用户设备选择合适的下载链接
+        const userAgent = navigator.userAgent.toLowerCase();
+        let downloadLink = null;
+
+        if (/iphone|ipad|ipod/.test(userAgent)) {
+          downloadLink = links.ios_app_store;
+        } else if (/android/.test(userAgent)) {
+          if (/huawei/.test(userAgent)) {
+            downloadLink = links.huawei_app_gallery;
+          } else if (/xiaomi/.test(userAgent)) {
+            downloadLink = links.xiaomi_app_store;
+          } else if (/oppo/.test(userAgent)) {
+            downloadLink = links.oppo_app_store;
+          } else if (/vivo/.test(userAgent)) {
+            downloadLink = links.vivo_app_store;
+          } else if (/samsung/.test(userAgent)) {
+            downloadLink = links.samsung_galaxy_store;
+          } else {
+            downloadLink = links.android_google_play || links.android_direct_download;
+          }
+        }
+
+        setAppDownloadLink(downloadLink);
+      }
+    };
+
+    fetchAppDownloadLink();
   }, []);
 
   const loadMoreProducts = async () => {
@@ -205,7 +240,7 @@ const FeatureProductSection: React.FC<FeatureProductSectionProps> = () => {
           <div className="mt-4 mb-4">
             {/* 购买按钮 */}
             <a
-              href={currentProduct?.purchase_link || '#'}
+              href={appDownloadLink || '#'}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full text-white font-bold uppercase transition-colors"
